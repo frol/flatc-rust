@@ -1,0 +1,17 @@
+[package]
+name = "flatc-rust"
+version = "0.1.0"
+authors = ["Vlad Frolov <frolvlad@gmail.com>"]
+license = "MIT/Apache-2.0"
+homepage = "https://github.com/frol/flatc-rust"
+repository = "https://github.com/frol/flatc-rust"
+description = """
+FlatBuffers flatc command as API
+"""
+edition = "2018"
+
+[dependencies]
+log = "0.*"
+
+[dev-dependencies]
+tempfile = "3.0.5"
