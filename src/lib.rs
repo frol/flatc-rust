@@ -114,7 +114,7 @@ where
 ///     ..Default::default()
 /// };
 /// ```
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Args<'a> {
     /// Specify the programming language (`rust` is the default)
     pub lang: &'a str,
@@ -156,9 +156,7 @@ impl Flatc {
 
     /// New `flatc` command from specified path
     pub fn from_path(path: PathBuf) -> Flatc {
-        Flatc {
-            exec: path,
-        }
+        Flatc { exec: path }
     }
 
     /// Check `flatc` command found and valid
@@ -187,7 +185,7 @@ impl Flatc {
         if !output.status.success() {
             return Err(err_other("flatc failed with error"));
         }
-        let output = String::from_utf8(output.stdout).map_err(|e| err_other(e))?;
+        let output = String::from_utf8(output.stdout).map_err(err_other)?;
         let output = output
             .lines()
             .next()

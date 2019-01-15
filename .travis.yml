@@ -7,5 +7,16 @@ matrix:
   allow_failures:
     - rust: nightly
   fast_finish: true
+env:
+  - FLATBUFFERS_VERSION=1.10.0
 script:
-  - cargo test --all --verbose
+  - wget -qO - "https://github.com/google/flatbuffers/archive/v${FLATBUFFERS_VERSION}.tar.gz" | tar -xz && \
+    ( \
+      cd "flatbuffers-$FLATBUFFERS_VERSION" && \
+      cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release && \
+      make -j3 flatc \
+    )
+  - env "PATH=$PATH:$(pwd)/flatbuffers-$FLATBUFFERS_VERSION" cargo test --all --verbose
+  - rustup component add clippy rustfmt && \
+    cargo clippy && \
+    cargo fmt -- --check
