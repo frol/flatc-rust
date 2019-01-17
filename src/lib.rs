@@ -34,7 +34,7 @@
 //! # try_main().ok();
 //! ```
 //!
-//! ## Build scripts (`build.rs`) integration example
+//! ## Build scripts (`build.rs`) integration
 //!
 //! It is common to have FlatBuffers specifications as a single source of truth, and thus, it is
 //! wise to build up-to-date helpers when you build your project. There is a built-in support for
@@ -82,6 +82,12 @@
 //!
 //! [build scripts in Cargo]: https://doc.rust-lang.org/cargo/reference/build-scripts.html
 //! [example projects]: https://github.com/frol/flatc-rust/tree/master/examples
+//!
+//! ## Usage in external projects
+//!
+//! There is [a benchmark of FlatBuffers vs other serialization
+//! frameworks](https://github.com/erickt/rust-serialization-benchmarks/pull/7), which is based on
+//! `flatc-rust` integration.
 
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
