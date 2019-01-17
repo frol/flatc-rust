@@ -83,6 +83,9 @@
 //! [build scripts in Cargo]: https://doc.rust-lang.org/cargo/reference/build-scripts.html
 //! [example projects]: https://github.com/frol/flatc-rust/tree/master/examples
 
+#![deny(missing_docs)]
+#![deny(unsafe_code)]
+
 use std::ffi::OsString;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -90,7 +93,9 @@ use std::process;
 
 use log::info;
 
+/// The default Error type of the crate
 pub type Error = io::Error;
+/// The default Result type of the crate
 pub type Result<T> = io::Result<T>;
 
 fn err_other<E>(error: E) -> Error
@@ -294,6 +299,7 @@ pub struct Version {
 }
 
 impl Version {
+    /// Version getter
     pub fn version(&self) -> &str {
         &self.version
     }
