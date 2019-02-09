@@ -135,6 +135,12 @@ pub struct Args<'a> {
     pub out_dir: &'a Path,
     /// Search for includes in the specified paths (`-I PATH` parameter)
     pub includes: &'a [&'a Path],
+    /// Set the flatc '--binary' flag
+    pub binary: bool,
+    /// Set the flatc '--schema' flag
+    pub schema: bool,
+    /// Set the flatc '--json' flag
+    pub json: bool,
 }
 
 impl Default for Args<'_> {
@@ -144,6 +150,9 @@ impl Default for Args<'_> {
             out_dir: Path::new(""),
             includes: &[],
             inputs: &[],
+            binary: false,
+            schema: false,
+            json: false,
         }
     }
 }
@@ -250,6 +259,18 @@ impl Flatc {
             arg.push(args.lang);
             arg
         });
+
+        if args.binary {
+            cmd_args.push("--binary".into());
+        }
+
+        if args.schema {
+            cmd_args.push("--schema".into());
+        }
+
+        if args.json {
+            cmd_args.push("--json".into());
+        }
 
         if args.lang.is_empty() {
             return Err(err_other("lang is empty"));
