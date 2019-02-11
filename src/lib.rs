@@ -255,6 +255,11 @@ impl Flatc {
             return Err(err_other("lang is empty"));
         }
 
+        for include in args.includes.iter() {
+            cmd_args.push("-I".into());
+            cmd_args.push(include.into());
+        }
+
         cmd_args.push("-o".into());
         cmd_args.push(
             args.out_dir
@@ -273,13 +278,6 @@ impl Flatc {
         }
 
         cmd_args.extend(args.inputs.iter().map(|input| input.into()));
-
-        cmd_args.extend(args.includes.iter().map(|include| {
-            let mut arg = OsString::with_capacity(include.as_os_str().len() + 3);
-            arg.push("-I");
-            arg.push(include.as_os_str());
-            arg
-        }));
 
         self.run_with_args(cmd_args)
     }
