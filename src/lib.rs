@@ -92,7 +92,7 @@
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
 
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -126,15 +126,15 @@ where
 /// };
 /// ```
 #[derive(Debug, Clone, Copy)]
-pub struct Args<'a> {
+pub struct Args<'a, P: AsRef<Path> + AsRef<OsStr>, Q: AsRef<Path> + AsRef<OsStr>> {
     /// Specify the programming language (`rust` is the default)
     pub lang: &'a str,
     /// List of `.fbs` files to compile [required to be non-empty]
-    pub inputs: &'a [&'a Path],
+    pub inputs: &'a [P],
     /// Output path for the generated helpers (`-o PATH` parameter) [required]
     pub out_dir: &'a Path,
     /// Search for includes in the specified paths (`-I PATH` parameter)
-    pub includes: &'a [&'a Path],
+    pub includes: &'a [Q],
     /// Set the flatc '--binary' flag
     pub binary: bool,
     /// Set the flatc '--schema' flag
@@ -143,7 +143,7 @@ pub struct Args<'a> {
     pub json: bool,
 }
 
-impl Default for Args<'_> {
+impl<'a, P: AsRef<Path> + AsRef<OsStr>> Default for Args<'a, P, &'a Path> {
     fn default() -> Self {
         Self {
             lang: "rust",
@@ -246,7 +246,11 @@ impl Flatc {
     }
 
     /// Execute configured `flatc` with given args
-    pub fn run(&self, args: Args) -> Result<()> {
+    pub fn run<P, Q>(&self, args: Args<P, Q>) -> Result<()>
+    where
+        P: AsRef<Path> + AsRef<OsStr>,
+        Q: AsRef<Path> + AsRef<OsStr>,
+    {
         let mut cmd_args: Vec<OsString> = Vec::new();
 
         if args.out_dir.as_os_str().is_empty() {
@@ -309,7 +313,11 @@ impl Flatc {
 /// # Examples
 ///
 /// Please, refer to [the root crate documentation](index.html#examples).
-pub fn run(args: Args) -> Result<()> {
+pub fn run<P, Q>(args: Args<P, Q>) -> Result<()>
+where
+    P: AsRef<Path> + AsRef<OsStr>,
+    Q: AsRef<Path> + AsRef<OsStr>,
+{
     let flatc = Flatc::from_env_path();
 
     // First check with have good `flatc`
