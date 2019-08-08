@@ -22,12 +22,13 @@
 //!
 //! # fn try_main() -> flatc_rust::Result<()> {
 //! #
-//! flatc_rust::run(flatc_rust::Args {
+//! let args: flatc_rust::Args<_, &Path> = flatc_rust::Args {
 //!     lang: "rust",  // `rust` is the default, but let's be explicit
 //!     inputs: &[Path::new("./flatbuffers/input.fbs")],
 //!     out_dir: Path::new("./flatbuffers-helpers-for-rust/"),
 //!     ..Default::default()
-//! })?;
+//! };
+//! flatc_rust::run(args)?;
 //! #
 //! #     Ok(())
 //! # }
@@ -52,11 +53,12 @@
 //!
 //!     fn main() {
 //!         println!("cargo:rerun-if-changed=src/message.fbs");
-//!         flatc_rust::run(flatc_rust::Args {
+//!         let args: flatc_rust::Args<_, &Path> = flatc_rust::Args {
 //!             inputs: &[Path::new("src/message.fbs")],
 //!             out_dir: Path::new("target/flatbuffers/"),
 //!             ..Default::default()
-//!         }).expect("flatc");
+//!         };
+//!         flatc_rust::run(args).expect("flatc");
 //!     }
 //!     ```
 //! 3. Add `flatc-rust` into `[build-dependencies]` section in `Cargo.toml`:
@@ -92,7 +94,7 @@
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
 
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -118,7 +120,7 @@ where
 /// ```
 /// use std::path::Path;
 ///
-/// let flatc_args = flatc_rust::Args {
+/// let flatc_args: flatc_rust::Args<_, &Path> = flatc_rust::Args {
 ///     lang: "rust",
 ///     inputs: &[Path::new("./src/input.fbs")],
 ///     out_dir: Path::new("./flatbuffers-helpers-for-rust/"),
@@ -126,15 +128,15 @@ where
 /// };
 /// ```
 #[derive(Debug, Clone, Copy)]
-pub struct Args<'a> {
+pub struct Args<'a, P: AsRef<Path> + AsRef<OsStr>, Q: AsRef<Path> + AsRef<OsStr>> {
     /// Specify the programming language (`rust` is the default)
     pub lang: &'a str,
     /// List of `.fbs` files to compile [required to be non-empty]
-    pub inputs: &'a [&'a Path],
+    pub inputs: &'a [P],
     /// Output path for the generated helpers (`-o PATH` parameter) [required]
     pub out_dir: &'a Path,
     /// Search for includes in the specified paths (`-I PATH` parameter)
-    pub includes: &'a [&'a Path],
+    pub includes: &'a [Q],
     /// Set the flatc '--binary' flag
     pub binary: bool,
     /// Set the flatc '--schema' flag
@@ -143,7 +145,7 @@ pub struct Args<'a> {
     pub json: bool,
 }
 
-impl Default for Args<'_> {
+impl<P: AsRef<Path> + AsRef<OsStr>, Q: AsRef<Path> + AsRef<OsStr>> Default for Args<'_, P, Q> {
     fn default() -> Self {
         Self {
             lang: "rust",
@@ -246,7 +248,11 @@ impl Flatc {
     }
 
     /// Execute configured `flatc` with given args
-    pub fn run(&self, args: Args) -> Result<()> {
+    pub fn run<P, Q>(&self, args: Args<P, Q>) -> Result<()>
+    where
+        P: AsRef<Path> + AsRef<OsStr>,
+        Q: AsRef<Path> + AsRef<OsStr>,
+    {
         let mut cmd_args: Vec<OsString> = Vec::new();
 
         if args.out_dir.as_os_str().is_empty() {
@@ -309,7 +315,11 @@ impl Flatc {
 /// # Examples
 ///
 /// Please, refer to [the root crate documentation](index.html#examples).
-pub fn run(args: Args) -> Result<()> {
+pub fn run<P, Q>(args: Args<P, Q>) -> Result<()>
+where
+    P: AsRef<Path> + AsRef<OsStr>,
+    Q: AsRef<Path> + AsRef<OsStr>,
+{
     let flatc = Flatc::from_env_path();
 
     // First check with have good `flatc`
@@ -348,13 +358,13 @@ mod test {
         std::fs::write(&input_path, "table Test { text: string; } root_type Test;")
             .expect("test input fbs file could not be written");
 
-        run(Args {
+        let args: Args<_, &Path> = Args {
             lang: "rust",
             inputs: &[&input_path],
             out_dir: temp_dir.path(),
             ..Default::default()
-        })
-        .expect("run");
+        };
+        run(args).expect("run");
 
         let output_path = input_path.with_file_name("test_generated.rs");
         assert!(output_path.exists());
