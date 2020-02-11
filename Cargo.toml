@@ -17,7 +17,7 @@ include = ["/src/**/*", "/Cargo.toml", "/LICENSE-MIT", "/LICENSE-APACHE", "/READ
 travis-ci = { repository = "frol/flatc-rust" }
 
 [dependencies]
-log = "0.*"
+log = ">=0.4.4"
 
 [dev-dependencies]
 tempfile = "3.0.5"
