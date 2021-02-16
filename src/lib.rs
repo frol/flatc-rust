@@ -141,6 +141,8 @@ pub struct Args<'a> {
     pub schema: bool,
     /// Set the flatc '--json' flag
     pub json: bool,
+    /// Extra args to pass to flatc
+    pub extra: &'a [&'a str],
 }
 
 impl Default for Args<'_> {
@@ -153,6 +155,7 @@ impl Default for Args<'_> {
             binary: false,
             schema: false,
             json: false,
+            extra: &[],
         }
     }
 }
@@ -270,6 +273,12 @@ impl Flatc {
 
         if args.json {
             cmd_args.push("--json".into());
+        }
+
+        if !args.extra.is_empty() {
+            for extra_arg in args.extra {
+                cmd_args.push(extra_arg.into());
+            }
         }
 
         if args.lang.is_empty() {
