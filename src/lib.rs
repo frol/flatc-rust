@@ -141,6 +141,8 @@ pub struct Args<'a> {
     pub schema: bool,
     /// Set the flatc '--json' flag
     pub json: bool,
+    /// Extra args to pass to flatc
+    pub extra: &'a [&'a str],
 }
 
 impl Default for Args<'_> {
@@ -153,6 +155,7 @@ impl Default for Args<'_> {
             binary: false,
             schema: false,
             json: false,
+            extra: &[],
         }
     }
 }
@@ -175,8 +178,8 @@ impl Flatc {
     }
 
     /// New `flatc` command from specified path
-    pub fn from_path(path: PathBuf) -> Flatc {
-        Flatc { exec: path }
+    pub fn from_path<P: std::convert::Into<PathBuf>>(path: P) -> Flatc {
+        Flatc { exec: path.into() }
     }
 
     /// Check `flatc` command found and valid
@@ -270,6 +273,10 @@ impl Flatc {
 
         if args.json {
             cmd_args.push("--json".into());
+        }
+
+        for extra_arg in args.extra {
+            cmd_args.push(extra_arg.into());
         }
 
         if args.lang.is_empty() {
