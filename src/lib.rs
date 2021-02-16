@@ -178,7 +178,7 @@ impl Flatc {
     }
 
     /// New `flatc` command from specified path
-    pub fn from_path(path: &Path) -> Flatc {
+    pub fn from_path<P: std::convert::Into<PathBuf>>(path: P) -> Flatc {
         Flatc { exec: path.into() }
     }
 
@@ -275,10 +275,8 @@ impl Flatc {
             cmd_args.push("--json".into());
         }
 
-        if !args.extra.is_empty() {
-            for extra_arg in args.extra {
-                cmd_args.push(extra_arg.into());
-            }
+        for extra_arg in args.extra {
+            cmd_args.push(extra_arg.into());
         }
 
         if args.lang.is_empty() {
