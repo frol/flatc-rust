@@ -178,8 +178,8 @@ impl Flatc {
     }
 
     /// New `flatc` command from specified path
-    pub fn from_path(path: PathBuf) -> Flatc {
-        Flatc { exec: path }
+    pub fn from_path(path: &Path) -> Flatc {
+        Flatc { exec: path.into() }
     }
 
     /// Check `flatc` command found and valid
