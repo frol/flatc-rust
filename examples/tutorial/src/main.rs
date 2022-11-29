@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-#[allow(non_snake_case)]
+#[allow(dead_code, unused_imports)]
 #[path = "../target/flatbuffers/monster_generated.rs"]
 mod monster_flatbuffers;
 
 use self::monster_flatbuffers::my_game::sample::{
-    get_root_as_monster, Color, Equipment, Monster, MonsterArgs, Vec3, Weapon, WeaponArgs,
+    root_as_monster, Color, Equipment, Monster, MonsterArgs, Vec3, Weapon, WeaponArgs,
 };
 
 fn main() {
     // Build up a serialized buffer algorithmically.
     // Initialize it with a capacity of 1024 bytes.
-    let mut builder = flatbuffers::FlatBufferBuilder::new_with_capacity(1024);
+    let mut builder = flatbuffers::FlatBufferBuilder::with_capacity(1024);
 
     // Serialize some weapons for the Monster: A 'sword' and an 'axe'.
     let weapon_one_name = builder.create_string("Sword");
@@ -100,7 +100,7 @@ fn main() {
     let buf = builder.finished_data(); // Of type `&[u8]`
 
     // Get access to the root:
-    let monster = get_root_as_monster(buf);
+    let monster = root_as_monster(buf).unwrap();
 
     // Get and test some scalar types from the FlatBuffer.
     let hp = monster.hp();
@@ -127,7 +127,7 @@ fn main() {
 
     // Note that this vector is returned as a slice, because direct access for
     // this type, a u8 vector, is safe on all platforms:
-    let third_item = inv[2];
+    let third_item = inv.get(2);
     assert_eq!(third_item, 2);
 
     // Get and test the `weapons` FlatBuffers's `vector`.
