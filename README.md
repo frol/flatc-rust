@@ -1,4 +1,4 @@
-# FlatBuffers flatc API for Rust [![crates.io](https://meritbadge.herokuapp.com/flatc-rust)](https://crates.io/crates/flatc-rust) [![Documentation](https://docs.rs/flatc-rust/badge.svg)](https://docs.rs/flatc-rust) [![Build Status](https://travis-ci.org/frol/flatc-rust.svg?branch=master)](https://travis-ci.org/frol/flatc-rust)
+# FlatBuffers flatc API for Rust [![Crates.io Version](https://img.shields.io/crates/v/flatc-rust)](https://crates.io/crates/flatc-rust) [![Documentation](https://docs.rs/flatc-rust/badge.svg)](https://docs.rs/flatc-rust)
 
 This crate provides a programmatical way to invoke `flatc` command (e.g. from
 `build.rs`) to generate Rust (or, in fact, any other language) helpers to work
