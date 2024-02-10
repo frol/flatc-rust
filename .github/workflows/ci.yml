@@ -1,0 +1,71 @@
+name: CI
+
+permissions:
+  pull-requests: write
+  contents: write
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  RUSTFLAGS: -D warnings
+  RUST_BACKTRACE: short
+  CARGO_NET_RETRY: 10
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Show Active Rust Toolchain
+      run: rustup show active-toolchain
+
+    - name: Run cargo test
+      run: cargo test --verbose --workspace
+
+  clippy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Run clippy
+      run: cargo clippy -- -D clippy::all
+
+  cargo-fmt:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Run cargo fmt
+      run: cargo fmt --all -- --check
+
+  release-plz:
+    runs-on: ubuntu-latest
+    needs: [test, clippy, cargo-fmt]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLZ_GITHUB_TOKEN }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run release-plz
+        uses: MarcoIeni/release-plz-action@v0.5
+        env:
+          # https://marcoieni.github.io/release-plz/github-action.html#triggering-further-workflow-runs
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PLZ_GITHUB_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
