@@ -7,9 +7,10 @@ with [FlatBuffers](https://google.github.io/flatbuffers).
 NOTE: You will still need
 [`flatc` utility](https://google.github.io/flatbuffers/flatbuffers_guide_using_schema_compiler.html)
 version [1.10.0+](https://github.com/google/flatbuffers/releases/tag/v1.10.0) installed (there are
-[windows binary releases](https://github.com/google/flatbuffers/releases), `flatbuffers` packages
-for [conda](https://anaconda.org/conda-forge/flatbuffers) [Windows, Linux, MacOS],
-[Arch Linux](https://www.archlinux.org/packages/community/x86_64/flatbuffers/)).
+[windows binary releases](https://github.com/google/flatbuffers/releases), `flatbuffers-compiler`
+package for Debian/Ubuntu, `flatbuffers` packages for
+[Arch Linux](https://archlinux.org/packages/extra/x86_64/flatbuffers/) and
+[conda](https://anaconda.org/conda-forge/flatbuffers) [Windows, Linux, MacOS]).
 
 ## Usage and Examples
 
