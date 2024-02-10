@@ -201,7 +201,7 @@ impl Flatc {
                 .stdin(process::Stdio::null())
                 .stdout(process::Stdio::piped())
                 .stderr(process::Stdio::piped())
-                .args(&["--version"]),
+                .args(["--version"]),
         )?;
 
         let output = child.wait_with_output()?;
@@ -222,7 +222,7 @@ impl Flatc {
             .chars()
             .next()
             .ok_or_else(|| err_other("version is empty"))?;
-        if !first_char.is_digit(10) {
+        if !first_char.is_ascii_digit() {
             return Err(err_other("version does not start with digit"));
         }
         Ok(Version {

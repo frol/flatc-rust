@@ -28,6 +28,9 @@ jobs:
     - name: Show Active Rust Toolchain
       run: rustup show active-toolchain
 
+    - name: Install flatc dependency
+      run: sudo apt-get install -y flatbuffers-compiler
+
     - name: Run cargo test
       run: cargo test --verbose --workspace
 
