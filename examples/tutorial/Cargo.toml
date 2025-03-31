@@ -8,4 +8,4 @@ edition = "2018"
 flatc-rust = { path = "../../" }
 
 [dependencies]
-flatbuffers = "22.9.29"
+flatbuffers = "25.2.10"
